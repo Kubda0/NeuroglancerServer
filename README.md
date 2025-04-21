@@ -106,7 +106,7 @@ Go to the EC2 dashboard and launch an “ubuntu” instance. Name it “Neurogla
 
 Open the advanced menu and with the IAM instance profile role, add the IAM role just created from the advanced menu.  
 
-![Diagram](images/mage8.png)
+![Diagram](images/image8.png)
 
 Use the advanced settings to boot up with the following user data. All other settings can be left at their defaults.
 
@@ -304,7 +304,7 @@ Make the following changes:
 
 Save the changes.
 
-**![][image23]**
+![Diagram](images/image23.png)
 
 Click on “Sign-up” from the middle left hand column. Click on “edit” for the self-service signin (near the bottom of the page). Toggle off the ability to self-register.
 
@@ -315,16 +315,23 @@ The certificate created earlier is required at this step.
 Go back to the EC2 page and select ALB from the left hand column. Select the name of the load balancer created earlier. Scroll down to “listeners and rules” and select “Add listener” which is located in the lower right hand corner.
 
 Select https for the protocol and 443 for the port. Toggle the box in the Authentication section to select “Use open id or amazon cognito”. Select “amazon cognito” in the pull down menu for Identity provider. Select the user pool created earlier in the “User pool” pull down menu. Select the app client offered from the pull down menu.  
-![][image24]  
+
+![Diagram](images/image24.png)
+
 Leave “Forward to target groups” and select the target group created earlier in the box below.
 
 Select “Turn on group stickiness” and set duration for 7 days.
 
-Leave the next row at their defaults and select the wildcard certificate created earlier from the drop down menu (\*.domainname).![][image25]  
+Leave the next row at their defaults and select the wildcard certificate created earlier from the drop down menu (\*.domainname).
+
+![Diagram](images/image25.png)
+
 Click on the orange “Add” button on the lower right hand corner.
 
 Select the HTTP:80 listener. Select the “Manage listener” pull down menu and delete the port 80 listener.  
-![][image26]  
+
+![Diagram](images/image26.png)
+
 Next, remove the port 80 security group. To do so, click on the “Security” tab in the center of the screen. Click on “edit” on the right, click the small x next to the http group. From the “Security groups” box, add the “app” security group if it is not already there. Click on the orange “Save changes” button.
 
 **From the main EC2 instance console page, remove the port 80 security group from the Neuroglancer Instance.**
@@ -334,7 +341,9 @@ Please note that going to the ALB URL will not connect because GCP and cognito d
 # Step 11: Point a friendly URL to the ALB 
 
 Go to Route 53\. Select hosted zones from the upper left menu. Select the domain name created in Step 1\. Select the orange “create record”.  
-![][image27]  
+
+![Diagram](images/image27.png)
+
 Add the desired subdomain name such as “neuroglancer”. Select the alias toggle right below the added name. A set of menus will appear. 
 
 In the first new menu, “route traffic”, select “Alias to Application and Classic Load Balancer”. In the next menu box below, pick the region for the location of the ALB. While ALB is a regional service, route 53 is a global service. The next pull down box will offer the ALB name to pick \- there is likely only one to choose from. Select the orange “create record”.
@@ -348,11 +357,14 @@ Wait 10 minutes for it to propagate.
 Return to the cognito dashboard. Double check the region. Leaving a global service typically places you back in us-east-1
 
 From AWS Cognito, click on “User Pools” on the right, and select your user pool by clicking on the name. Click on the “App clients” menu item on the upper left. Select the app client name in blue and select “managed login pages configuration” near the center of the screen. Click “Edit” directly to the left of the “View login page” button and in the middle of the right hand side of the page.  
-![][image28]
+
+![Diagram](images/image28.png)
 
 Add the full domain name to cognito with **oauth2/idpresponse** added to the end as shown in the picture below. It will be something like: [https://neuroglancer.domain.com/oauth2/idpreponse](https://neuroglancer.alunazee.net/oauth2/idpreponse)
 
-![][image29]  
+
+![Diagram](images/image29.png)
+
 Click the orange “save changes” button at the lower right corner. Again, wait 10 minutes.
 
 At this point, you should be able to check the route 53 URL in a browser such as: 
@@ -401,7 +413,9 @@ There are four spaces at the front of the line for the correct indentation:
     init \= init || {};  
     init.credentials \= "include"; // Ensure cookies are sent with requests
 
-It will look as follows:![][image30]
+
+![Diagram](images/image30.png)
+
 
 ## Build Neuroglancer
 
@@ -450,7 +464,9 @@ sudo systemctl restart nginx
 sudo nginx \-t
 
 The output of this command should look like this:  
-![][image31]
+
+![Diagram](images/image31.png)
+
 
 Neuroglancer should now be running on this instance but is not yet accessible to the ALB.
 
@@ -458,14 +474,20 @@ Neuroglancer should now be running on this instance but is not yet accessible to
 
 From the EC2 dashboard select “Target Groups” located in the lower portion of the left hand column. Select the blue name of the previously created target group. Select the Neuroglancer instance and click deregister.
 
-![][image32]
+
+![Diagram](images/image32.png)
+
 
 Select the blue button “Register targets”. Select the instance and change the port to 8080\. Select “**Include as pending below**” button which is easy to miss.  
-![][image33]  
+
+![Diagram](images/image33.png)
+
 Click the orange “register pending targets” in the lower right corner.
 
 **TEST:** The neuroglancer instance is now available with the URL. Please test it  
-![][image34]
+
+![Diagram](images/image34.png)
+
 
 # Step 15: Check the S3 bucket to be hosted by cloudfront
 
@@ -476,7 +498,9 @@ Please double check this and make private if necessary. “Block all public acce
 Check the bucket for any existing permissions such as a bucket policy and remove it if it exists. If you believe they are necessary then those permissions will need to be integrated with the permissions that follow in later steps. We will add a bucket policy and a cors policy later on and these will be overwritten with the procedures here.
 
 Also note that “static website hosting” should not be enabled as is the default. Once the cloudfront distribution is created, we will add a bucket policy to the bucket allowing it to communicate with cloudfront.  
-![][image35]
+
+![Diagram](images/image35.png)
+
 
 # Step 16: Create a cloudfront key pair and key group
 
@@ -507,19 +531,24 @@ cat nglcoud.pub
 
 Copy and paste the contents of that file into the cloudfront page just displayed.
 
-![][image36]  
+
+![Diagram](images/image36.png)
+
 Select the orange “Create public key” in the lower right corner.
 
 ## Note down the key ID
 
 Navigate to CloudFront console, in the menu on the left side of the screen find the section called “Key management”, click on the option “Public keys”. Find the name of your key, “ngcloud”, and copy the ID for later use.  
-![][image37]
+
+![Diagram](images/image37.png)
+
 
 ## Create a cloudfront key group
 
 Next, click on ‘Key groups’ menu item on the lower left hand side of the cloudfront console. Select the orange “Create key group” in the upper right hand corner. Enter the name for the key group: “NGcloudKeyGroup”. Select the key just created, “ngcloud”.
 
-![][image38]
+![Diagram](images/image38.png)
+
 
 Select the orange “Create key group” button on the lower right.
 
@@ -530,15 +559,22 @@ Cloudfront hosts files in the S3 bucket maintaining privacy by requiring a cooki
 ## Create a CloudFront distribution 
 
 Go to the AWS CloudFront console and create a new distribution by selecting the orange “Create Distribution” button. Select your S3 bucket from the drop down menu in the Origin domain box. Leave the ‘Origin path’ field blank, and accept the default for the “Name”. Select “Origin Access Control Settings (recommended)” and select the blue “create a new OAC”.  
-![][image39]
 
-At the “create new OAC” panel select the orange “create” button.![][image40]  
+![Diagram](images/image39.png)
+
+
+At the “create new OAC” panel select the orange “create” button.
+
+![Diagram](images/image40.png)
+
 A note appears to copy the bucket policy for your s3 bucket but the policy to be used is not shared until the distribution has been created so we will do this later.
 
 Keep the defaults but change the “Viewer Protocol Policy” to “Redirect HTTP to HTTPS”. Double check that the “Allowed HTTP Methods” is set to “GET, HEAD”.
 
 At the “Restrict Viewer Access” toggle on “Yes” and select “use signed cookies”. Select the trusted key group created earlier.  
-![][image41]
+
+![Diagram](images/image41.png)
+
 
 Continue to accept the defaults but under Web Application Firewall, select “Do not enable security protections”.
 
@@ -547,26 +583,36 @@ For price Class: Use only North America and Europe
 Click the blue “Add item” under “Alternate domain name (CNAME) \- optional”.
 
 Enter in the name “test.domainname.net” such as “cfdist.alunzee.net”. Select the associated wildcard certificate, such as \*.domain.com.  
-![][image42]
+
+![Diagram](images/image42.png)
+
 
 Click the orange “Create Distribution” in the lower right hand column. A yellow bar will display. 
 
-![][image43]
+
+![Diagram](images/image43.png)
+
 
 Click “copy policy” and then click “go to S3 bucket permissions to update policy”. Select the permissions tab in the upper middle of the screen. Select Edit next to bucket policy. Paste in and save the copied bucket policy.  
-![][image44]
+
+![Diagram](images/image44.png)
+
 
 ## Edit the cloudfront distribution to include a Custom Response Headers Policy
 
 Navigate to CloudFront console and in the menu on the left select “Distributions”, select your distribution. From the tabs on the top row select “Behaviors”, select the option and click on the blue edit button. 
 
-![][image45]
+
+![Diagram](images/image45.png)
+
 
 Scroll down to the “Cache key and origin requests” section. Leave the default “Cache policy and origin request policy (recommended)”, under cache policy keep “CachingOptimized”, leave the “Origin request policy \- optional” blank. 
 
 We need to create a response headers policy. Under the “Response headers policy”, find and click the blue link under it “Create response headers policy”. A new tab will open.
 
-![][image46]
+
+![Diagram](images/image46.png)
+
 
 Enter a name for this policy, “cf\_cookie\_policy”, and add description “CORS policy to allow signed cookies in response header”.
 
@@ -577,30 +623,41 @@ Toggle “Configure CORS” to on.
 For “Access-Control-Allow-Origin”, select “Customize”.  
 Click “Add item”, and add the domain name of the Neuroglancer instance e.g. “[https://neuroglancer.domain.](https://neuroglancer3.alunazee.net)com”
 
-![][image47]
+![Diagram](images/image47.png)
+
 
 For “Access-Control-Allow-Headers”, select “Customize”
 
 Click “Add item” and add these 5 headers separately: Authorization, Content-Type, CloudFront-Key-Pair-Id, CloudFront-Signature, CloudFront-Policy  
-![][image48]
+
+![Diagram](images/image48.png)
+
 
 For “Access-Control-Allow-Methods”, select “Customize”
 
 From the drop down menu select the options “GET, OPTIONS, POST”
 
-![][image49]
+
+![Diagram](images/image49.png)
+
 
 For “Access-Control-Expose-Headers, select “Customize”.
 
 Add these 3 headers by clicking “Add item” button for each one: CloudFront-Key-Pair-Id, CloudFront-Signature, CloudFront-Policy
 
-![][image50]
+
+![Diagram](images/image50.png)
+
 
 At the bottom of this section find the option “Access-Control-Allow-Credentials” and select it.  
-![][image51]
+
+![Diagram](images/image51.png)
+
 
 The whole page will be as follows:  
-![][image52]  
+
+![Diagram](images/image52.png)
+
 Scroll to bottom of the page and click the orange button “Create”
 
 Navigate back to the CloudFront console, click on Distributions, click on your distribution, select “Behaviors” from top, select behavior and click blue “Edit” button. Scroll down to “Cache key and origin requests” section, find the “Response headers policy \- optional”, click on the drop down menu and select the policy name you just created “cf\_cookies\_policy”. Scroll to bottom of page and click orange “Save changes” button
@@ -622,7 +679,9 @@ Add the following CORS configuration:
 \]
 
 Replace https://app.yourdomain.com with your website domain such as neuroglancer.domain.com  
-![][image53]  
+
+![Diagram](images/image53.png)
+
 Save the changes.
 
 # Step 19: Set up the Cloudfront URL in Route 53
@@ -631,7 +690,8 @@ Navigate to the Route 53 console to configure the DNS for the custom cloudfront 
 
 From the Route 53 console, click on the “Hosted Zones” link on the left menu. Click on the name of your hosted zone, and find and click on the orange button “Create record”. Keep the record type at “A-name”. Enter the name used earlier for your distribution, for example, “cfdist” for “cfdist.domain.com”. Click on the alias button and select “Alias to cloudfront distribution”. Find the cloudfront distribution name from the list. Click the orange “Create records” button. 
 
-![][image54]
+![Diagram](images/image54.png)
+
 
 # Step 20: Add the script to generate cookies
 
@@ -772,7 +832,7 @@ sudo crontab \-e
 
 The first time cron is run it will ask you for your favorite editor. After that it will go straight into editing the file.  
 
-![Diagram][images/image55]  
+![Diagram][images/image55.png]  
 
 Select the editor of your choice and add the following line at the bottom of the file:  
 This will set the cron job to run at 12:00pm UTC (04:00am PST) every Monday
@@ -792,7 +852,7 @@ After running the commands above go to a web browser and navigate to your Neurog
 
 **Example loading zarr from private bucket**
 
-As souce give:  
+As source give:  
 https://\<url from step 17\>/\<path on s3\>
 
 # Step 23: Quick security checks
