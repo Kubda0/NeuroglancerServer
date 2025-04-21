@@ -84,9 +84,9 @@ This works because amazon adds an SSM-agent to the amazon provided amazon linux 
 
 An instance launched with this role attached can be accessed from the EC2 console using the connect button in the upper right corner.
 
-#![Diagram](images/figure6.png)
+![Diagram](images/figure6.png)
 There are multiple ways to connect using the connect button. Pick the middle option, “Session Manager” and then the orange “connect” button.  
-#![Diagram](images/figure7.png)
+![Diagram](images/figure7.png)
 
 This logs you into a terminal window but as a user called “ssm-user”. 
 
@@ -101,7 +101,7 @@ An Ubuntu EC2 instance is created to begin the creation of the cognito / alb inf
 Go to the EC2 dashboard and launch an “ubuntu” instance. Name it “Neuroglancer” or something similar. Use a c6a.large instance. Use the security group with port 80 open (Allow HTTP traffic from the internet) and the “app” security group. Set the keypair if desired but it is not necessary. Select 24G of volume space. 
 
 Open the advanced menu and with the IAM instance profile role, add the IAM role just created from the advanced menu.  
-#![Diagram](images/figure8.png)
+![Diagram](images/figure8.png)
 
 Use the advanced settings to boot up with the following user data. All other settings can be left at their defaults.
 
@@ -132,14 +132,14 @@ chmod \-R 755 /var/www/html
 
 systemctl restart nginx  
 systemctl enable nginx  
-#![Diagram](images/figure9.png)
+![Diagram](images/figure9.png)
 Launch the instance. Ignore the warning about the need to proceed without selecting a key pair if one is not available. Give the EC2 instance 10 minutes to come up.
 
 Check that this instance is a webserver by copying the ip address from the AWS console EC2 instance details and then pasting the ip address in the browser. Paste the IP address without http or https initially. If this does not work, add http:// to the ip address. 
 
 Https will not work but some browsers may redirect to http to allow the website to come up. The page does not have a certificate attached and the response to the requested URL is different with different browsers. Use the IP address and not the DNS name. The page should look something like this:
 
-#![Diagram](images/figure10.png)
+![Diagram](images/figure10.png)
 Step 5: Create target group
 
 As always, double check the region (last time mentioning this). 
@@ -157,11 +157,11 @@ Select the orange “Create target group” near the bottom of the page.
 From the EC2 dashboard select “Load balancers” on the lower left hand side. Select the orange “Create load balancer” button. Select the first box “application load balancer” by clicking the blue button “Create”. Give the ALB a name such as “NeuroglancerLoadBalancer”. Keep the defaults. Select all of the subnets available. Next for security groups, remove the default security group if offered, add the security groups with port 80,  port 443, and the app security group.
 
 Keep the default listener on port 80 and point it to the target group created in the previous step. Keep the other defaults and press the orange “Create load balancer” at the bottom of the page.  
-#![Diagram](images/figure11.png)
+![Diagram](images/figure11.png)
 Going back to the load balancer dashboard will show that the state is “Active” when the load balancer is ready. It can take a few minutes so go get another cup of coffee.
 
 The ALB has a DNS name such as: NeuroglancerLoadBalancer-366218461.us-east-1.elb.amazonaws.com Make a note of this though I don’t think this is used later.  
-#![Diagram](images/figure12.png)
+![Diagram](images/figure12.png)
 Paste it into a browser window (with http:// added) and you should receive the same result as in the previous step. 
 
 # Step 7: Create Cognito User Pool
@@ -175,11 +175,9 @@ At the set up page keep the default “Traditional web application”. You can t
 Note the existence of the “return URL” entry but leave it empty for now. Click on the yellow “Create user directory” in the lower right hand corner.
 
 Go back to the amazon cognito dashboard and click on “user pools”. Click on the obscure name of the user pool just created. Click on “rename” in the upper right corner and give the user pool a better name. Rename the name of the user pool to something like “NeuroglancerUserPool”.  
-![][image13]  
 ![Diagram](images/figure13.png)
 Click on “Domain” in the lower left hand column. Copy the cognito domain URL: [https://us-east-1fgg4vnmhs.auth.us-east-1.amazoncognito.com](https://us-east-1fgg4vnmhs.auth.us-east-1.amazoncognito.com) to a known holding spot. This will be needed when setting up the google identity in the next step.
 
-# ![][image14]
 ![Diagram](images/figure14.png)
 
 # Step 8: Create GCP, Google Identity Federation
@@ -192,23 +190,25 @@ It is important to note that while AWS is account focused, GCP is project focuse
 
 This is most obvious by looking at the box just to the right of the words “Google Cloud” in the upper left hand corner. Clicking on that box will show you a list of projects available. Start by making a new project to use for the google identity.
 
-To do so, click on the box next to the google cloud logo and a pop up will appear with an option to make a new project (see picture). Click on “New project” and create a new project. Call it something like NeuroglancerIDF. Use the defaults for everything else (or pick judiciously if necessary).![][image15]  
+To do so, click on the box next to the google cloud logo and a pop up will appear with an option to make a new project (see picture). Click on “New project” and create a new project. Call it something like NeuroglancerIDF. Use the defaults for everything else (or pick judiciously if necessary).
 ![Diagram](images/figure15.png)
 Always double check you are in the correct project while using GCP. Occasionally you might bounce into other projects or even recently deleted projects. If there is a need to start from scratch, delete the old project and make a new project.
 
 If you are not automatically placed into the new project, select the box to the right of “Google Cloud” and pick the project just created. This should isolate you from other activity within the GCP account. 
 
 Once in the new project, click on the burger menu to the left of the “Google Cloud” logo and select “APIs and Services” \-\> “Credentials”. It looks like this:  
-![][image16]
+![Diagram](images/figure16.png)
 Notice the “CONFIGURE CONSENT SCREEN” button on the upper right and then click on it. Then click on “get started”. 
 
 Provide an App Name such as NeuroglancerAPP. Use the pull down menu to select your email address. Click Next and then click “Internal”. Click next. Enter your email and click “next” again. Agree to terms, click continue and create. The screen will look like this:  
-![][image17]  
+![Diagram](images/figure17.png)
 If it doesn’t, go back to the credentials dashboard: Click on the burger to the left of the “Google Cloud” logo and click on APIs & Services \-\> Credentials.
 
 Click on the “CONFIGURE CONSENT SCREEN” button again.  
-![][image18]Select the “branding” menu item on the left in the picture below.  
-![][image19]After clicking on “branding”. Add amazoncognito.com as an “authorized domain” near the bottom of the screen and click the blue SAVE at the very bottom. 
+![Diagram](images/figure18.png)
+Select the “branding” menu item on the left in the picture below.  
+![Diagram](images/figure19.png)
+After clicking on “branding”. Add amazoncognito.com as an “authorized domain” near the bottom of the screen and click the blue SAVE at the very bottom. 
 
 Select the ”data access” menu on the left.
 
@@ -232,11 +232,12 @@ Again, go back to the credentials dashboard: Click on the burger to the left of 
 If you see the “CONFIGURE CONSENT SCREEN” button again, kill all of the google tabs and step away for five minutes. This happened to me repeatedly and I don’t know why. I think it's a browser cache issue or bug.
 
 Login again, double check you are in the correct project, click on the burger to the left of the “Google Cloud” logo and click on APIs & Services \-\> Credentials. The "CONFIGURE CONSENT SCREEN” button should be gone:  
-![][image20]Click “+Create Credentials” near the center upper dashboard. Select “OAUTH client ID” from the revealed pulldown menu. 
+![Diagram](images/figure20.png)
+Click “+Create Credentials” near the center upper dashboard. Select “OAUTH client ID” from the revealed pulldown menu. 
 
 Select Web application in the pull down box, add a name such as NeuroglancerWEB. Add the URL from “Step 7: Create Cognito User Pool” to the authorized javascript origin. It looks like this:  
 [https://us-east-1fgg4vnmhs.auth.us-east-1.amazoncognito.com](https://us-east-1fgg4vnmhs.auth.us-east-1.amazoncognito.com)  
-![][image21]  
+![Diagram](images/figure21.png)
 Add the authorized redirect as, below that (not visible in the picture):  
 https://us-east-1fgg4vnmhs.auth.us-east-1.amazoncognito.com/oauth2/idpresponse
 
@@ -263,7 +264,7 @@ Add the words “profile email openid” for Authorized scopes.
 Map the email attribute as shown in the picture.  
 Select “Add Identity Provider”
 
-![][image22]  
+![Diagram](images/figure22.png)
 From the cognito dashboard \-\> User Pools \-\> click on the created app name \-\> App Clients \-\> click on the blue app client name \-\> click on “login pages” \-\> Click on edit for the “Managed login pages configuration”.
 
 Make the following changes: 
