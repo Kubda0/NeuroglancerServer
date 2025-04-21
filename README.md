@@ -148,7 +148,7 @@ Https will not work but some browsers may redirect to http to allow the website 
 
 ![Diagram](images/image10.png)
 
-Step 5: Create target group
+# Step 5: Create target group
 
 As always, double check the region (last time mentioning this). 
 
