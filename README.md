@@ -90,7 +90,7 @@ An instance launched with this role attached can be accessed from the EC2 consol
 
 There are multiple ways to connect using the connect button. Pick the middle option, “Session Manager” and then the orange “connect” button.  
 
-![Diagram](images/image7.png)
+![Diagram](images/image6a.png)
 
 This logs you into a terminal window but as a user called “ssm-user”. 
 
@@ -106,7 +106,7 @@ Go to the EC2 dashboard and launch an “ubuntu” instance. Name it “Neurogla
 
 Open the advanced menu and with the IAM instance profile role, add the IAM role just created from the advanced menu.  
 
-![Diagram](images/image8.png)
+![Diagram](images/image7.png)
 
 Use the advanced settings to boot up with the following user data. All other settings can be left at their defaults.
 
@@ -138,7 +138,7 @@ chmod \-R 755 /var/www/html
 systemctl restart nginx  
 systemctl enable nginx  
 
-![Diagram](images/image9.png)
+![Diagram](images/image8.png)
 
 Launch the instance. Ignore the warning about the need to proceed without selecting a key pair if one is not available. Give the EC2 instance 10 minutes to come up.
 
@@ -146,7 +146,7 @@ Check that this instance is a webserver by copying the ip address from the AWS c
 
 Https will not work but some browsers may redirect to http to allow the website to come up. The page does not have a certificate attached and the response to the requested URL is different with different browsers. Use the IP address and not the DNS name. The page should look something like this:
 
-![Diagram](images/image10.png)
+![Diagram](images/image9.png)
 
 # Step 5: Create target group
 
@@ -166,7 +166,7 @@ From the EC2 dashboard select “Load balancers” on the lower left hand side. 
 
 Keep the default listener on port 80 and point it to the target group created in the previous step. Keep the other defaults and press the orange “Create load balancer” at the bottom of the page.  
 
-![Diagram](images/image11.png)
+![Diagram](images/image10.png)
 
 Going back to the load balancer dashboard will show that the state is “Active” when the load balancer is ready. It can take a few minutes so go get another cup of coffee.
 
