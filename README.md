@@ -90,7 +90,7 @@ An instance launched with this role attached can be accessed from the EC2 consol
 
 There are multiple ways to connect using the connect button. Pick the middle option, “Session Manager” and then the orange “connect” button.  
 
-![Diagram](images/image7.png)
+![Diagram](images/image6a.png)
 
 This logs you into a terminal window but as a user called “ssm-user”. 
 
