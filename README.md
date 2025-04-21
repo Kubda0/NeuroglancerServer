@@ -7,7 +7,7 @@
 If one is not already available, select an AWS domain. This documentation describes how to set up Neuroglancer with a domain that was registered in the AWS account where the Neuroglancer instance is being deployed.
 
 A domain is found and registered from the main AWS Route 53 dashboard:  
-![][image1]
+![Diagram](images/figure1.png)
 
 ## Request a certificate for the domain
 
