@@ -8,7 +8,7 @@ If one is not already available, select an AWS domain. This documentation descri
 
 A domain is found and registered from the main AWS Route 53 dashboard:  
 
-![Diagram](images/figure1.png)
+![Diagram](images/image1.png)
 
 ## Request a certificate for the domain
 
@@ -22,13 +22,13 @@ Then click the “Add another name to the certificate” button and add:
 
 Keep the defaults and click “request” near the bottom right. 
 
-![Diagram](images/figure2.png)
+![Diagram](images/image2.png)
 
 # 
 
 Once a certificate is requested, navigate to ACM, click on the name of the certificate you just created. On the next screen click the button on the top right called “Create records in Route 53”. Make sure the domain names for the requested certificate are checked and click the “Create record” button on the bottom left. 
 
-![Diagram](images/figure3.png)
+![Diagram](images/image3.png)
 
 **This can take up to 30 minutes**, wait for it or the error message if it can not provide the certificate.
 
@@ -72,11 +72,11 @@ Move to the IAM console to create an IAM Role. Select role from the left hand me
 
 Go to the IAM Console
 
-![Diagram](images/figure4.png)
+![Diagram](images/image4.png)
 
 Select EC2 as the trusted entity and select the orange next button at the lower right.
 
-![Diagram](images/figure5.png)
+![Diagram](images/image5.png)
 
 Attach the policy AmazonSSMManagedInstanceCore by entering the word “core” into the search bar and selecting “AmazonSSMManagedInstanceCore” followed by the orange next button in the lower right corner. Give the role a name: “SSMforEC2” and click the orange “create” button on the lower right. This role will be available when creating the EC2 instance in the next step.
 
@@ -86,11 +86,11 @@ This works because amazon adds an SSM-agent to the amazon provided amazon linux 
 
 An instance launched with this role attached can be accessed from the EC2 console using the connect button in the upper right corner.
 
-![Diagram](images/figure6.png)
+![Diagram](images/image6.png)
 
 There are multiple ways to connect using the connect button. Pick the middle option, “Session Manager” and then the orange “connect” button.  
 
-![Diagram](images/figure7.png)
+![Diagram](images/image7.png)
 
 This logs you into a terminal window but as a user called “ssm-user”. 
 
@@ -106,7 +106,7 @@ Go to the EC2 dashboard and launch an “ubuntu” instance. Name it “Neurogla
 
 Open the advanced menu and with the IAM instance profile role, add the IAM role just created from the advanced menu.  
 
-![Diagram](images/figure8.png)
+![Diagram](images/mage8.png)
 
 Use the advanced settings to boot up with the following user data. All other settings can be left at their defaults.
 
@@ -138,7 +138,7 @@ chmod \-R 755 /var/www/html
 systemctl restart nginx  
 systemctl enable nginx  
 
-![Diagram](images/figure9.png)
+![Diagram](images/image9.png)
 
 Launch the instance. Ignore the warning about the need to proceed without selecting a key pair if one is not available. Give the EC2 instance 10 minutes to come up.
 
@@ -146,7 +146,7 @@ Check that this instance is a webserver by copying the ip address from the AWS c
 
 Https will not work but some browsers may redirect to http to allow the website to come up. The page does not have a certificate attached and the response to the requested URL is different with different browsers. Use the IP address and not the DNS name. The page should look something like this:
 
-![Diagram](images/figure10.png)
+![Diagram](images/image10.png)
 
 Step 5: Create target group
 
@@ -166,13 +166,13 @@ From the EC2 dashboard select “Load balancers” on the lower left hand side. 
 
 Keep the default listener on port 80 and point it to the target group created in the previous step. Keep the other defaults and press the orange “Create load balancer” at the bottom of the page.  
 
-![Diagram](images/figure11.png)
+![Diagram](images/image11.png)
 
 Going back to the load balancer dashboard will show that the state is “Active” when the load balancer is ready. It can take a few minutes so go get another cup of coffee.
 
 The ALB has a DNS name such as: NeuroglancerLoadBalancer-366218461.us-east-1.elb.amazonaws.com Make a note of this though I don’t think this is used later.  
 
-![Diagram](images/figure12.png)
+![Diagram](images/image12.png)
 
 Paste it into a browser window (with http:// added) and you should receive the same result as in the previous step. 
 
@@ -188,11 +188,11 @@ Note the existence of the “return URL” entry but leave it empty for now. Cli
 
 Go back to the amazon cognito dashboard and click on “user pools”. Click on the obscure name of the user pool just created. Click on “rename” in the upper right corner and give the user pool a better name. Rename the name of the user pool to something like “NeuroglancerUserPool”.  
 
-![Diagram](images/figure13.png)
+![Diagram](images/image13.png)
 
 Click on “Domain” in the lower left hand column. Copy the cognito domain URL: [https://us-east-1fgg4vnmhs.auth.us-east-1.amazoncognito.com](https://us-east-1fgg4vnmhs.auth.us-east-1.amazoncognito.com) to a known holding spot. This will be needed when setting up the google identity in the next step.
 
-![Diagram](images/figure14.png)
+![Diagram](images/image14.png)
 
 # Step 8: Create GCP, Google Identity Federation
 
@@ -206,7 +206,7 @@ This is most obvious by looking at the box just to the right of the words “Goo
 
 To do so, click on the box next to the google cloud logo and a pop up will appear with an option to make a new project (see picture). Click on “New project” and create a new project. Call it something like NeuroglancerIDF. Use the defaults for everything else (or pick judiciously if necessary).
 
-![Diagram](images/figure15.png)
+![Diagram](images/image15.png)
 
 Always double check you are in the correct project while using GCP. Occasionally you might bounce into other projects or even recently deleted projects. If there is a need to start from scratch, delete the old project and make a new project.
 
@@ -214,23 +214,23 @@ If you are not automatically placed into the new project, select the box to the 
 
 Once in the new project, click on the burger menu to the left of the “Google Cloud” logo and select “APIs and Services” \-\> “Credentials”. It looks like this:  
 
-![Diagram](images/figure16.png)
+![Diagram](images/image16.png)
 
 Notice the “CONFIGURE CONSENT SCREEN” button on the upper right and then click on it. Then click on “get started”. 
 
 Provide an App Name such as NeuroglancerAPP. Use the pull down menu to select your email address. Click Next and then click “Internal”. Click next. Enter your email and click “next” again. Agree to terms, click continue and create. The screen will look like this:  
 
-![Diagram](images/figure17.png)
+![Diagram](images/image17.png)
 
 If it doesn’t, go back to the credentials dashboard: Click on the burger to the left of the “Google Cloud” logo and click on APIs & Services \-\> Credentials.
 
 Click on the “CONFIGURE CONSENT SCREEN” button again.  
 
-![Diagram](images/figure18.png)
+![Diagram](images/image18.png)
 
 Select the “branding” menu item on the left in the picture below.  
 
-![Diagram](images/figure19.png)
+![Diagram](images/image19.png)
 
 After clicking on “branding”. Add amazoncognito.com as an “authorized domain” near the bottom of the screen and click the blue SAVE at the very bottom. 
 
@@ -257,14 +257,14 @@ If you see the “CONFIGURE CONSENT SCREEN” button again, kill all of the goog
 
 Login again, double check you are in the correct project, click on the burger to the left of the “Google Cloud” logo and click on APIs & Services \-\> Credentials. The "CONFIGURE CONSENT SCREEN” button should be gone:  
 
-![Diagram](images/figure20.png)
+![Diagram](images/image20.png)
 
 Click “+Create Credentials” near the center upper dashboard. Select “OAUTH client ID” from the revealed pulldown menu. 
 
 Select Web application in the pull down box, add a name such as NeuroglancerWEB. Add the URL from “Step 7: Create Cognito User Pool” to the authorized javascript origin. It looks like this:  
 [https://us-east-1fgg4vnmhs.auth.us-east-1.amazoncognito.com](https://us-east-1fgg4vnmhs.auth.us-east-1.amazoncognito.com)  
 
-![Diagram](images/figure21.png)
+![Diagram](images/image21.png)
 
 Add the authorized redirect as, below that (not visible in the picture):  
 https://us-east-1fgg4vnmhs.auth.us-east-1.amazoncognito.com/oauth2/idpresponse
@@ -292,7 +292,7 @@ Add the words “profile email openid” for Authorized scopes.
 Map the email attribute as shown in the picture.  
 Select “Add Identity Provider”
 
-![Diagram](images/figure22.png)
+![Diagram](images/image22.png)
 
 From the cognito dashboard \-\> User Pools \-\> click on the created app name \-\> App Clients \-\> click on the blue app client name \-\> click on “login pages” \-\> Click on edit for the “Managed login pages configuration”.
 
@@ -771,7 +771,9 @@ To create the chron job run the following at the ubuntu command line:
 sudo crontab \-e
 
 The first time cron is run it will ask you for your favorite editor. After that it will go straight into editing the file.  
-![][image55]  
+
+![Diagram][images/image55]  
+
 Select the editor of your choice and add the following line at the bottom of the file:  
 This will set the cron job to run at 12:00pm UTC (04:00am PST) every Monday
 
