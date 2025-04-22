@@ -584,18 +584,18 @@ Click the blue “Add item” under “Alternate domain name (CNAME) \- optional
 
 Enter in the name “test.domainname.net” such as “cfdist.alunzee.net”. Select the associated wildcard certificate, such as \*.domain.com.  
 
-![Diagram](images/image41.png)
+![Diagram](images/image42.png)
 
 
 Click the orange “Create Distribution” in the lower right hand column. A yellow bar will display. 
 
 
-![Diagram](images/image42.png)
+![Diagram](images/image43.png)
 
 
 Click “copy policy” and then click “go to S3 bucket permissions to update policy”. Select the permissions tab in the upper middle of the screen. Select Edit next to bucket policy. Paste in and save the copied bucket policy.  
 
-![Diagram](images/image43.png)
+![Diagram](images/image44.png)
 
 
 ## Edit the cloudfront distribution to include a Custom Response Headers Policy
@@ -603,7 +603,7 @@ Click “copy policy” and then click “go to S3 bucket permissions to update 
 Navigate to CloudFront console and in the menu on the left select “Distributions”, select your distribution. From the tabs on the top row select “Behaviors”, select the option and click on the blue edit button. 
 
 
-![Diagram](images/image44.png)
+![Diagram](images/image45.png)
 
 
 Scroll down to the “Cache key and origin requests” section. Leave the default “Cache policy and origin request policy (recommended)”, under cache policy keep “CachingOptimized”, leave the “Origin request policy \- optional” blank. 
@@ -611,7 +611,7 @@ Scroll down to the “Cache key and origin requests” section. Leave the defaul
 We need to create a response headers policy. Under the “Response headers policy”, find and click the blue link under it “Create response headers policy”. A new tab will open.
 
 
-![Diagram](images/image45.png)
+![Diagram](images/image46.png)
 
 
 Enter a name for this policy, “cf\_cookie\_policy”, and add description “CORS policy to allow signed cookies in response header”.
@@ -623,14 +623,14 @@ Toggle “Configure CORS” to on.
 For “Access-Control-Allow-Origin”, select “Customize”.  
 Click “Add item”, and add the domain name of the Neuroglancer instance e.g. “[https://neuroglancer.domain.](https://neuroglancer3.alunazee.net)com”
 
-![Diagram](images/image46.png)
+![Diagram](images/image47.png)
 
 
 For “Access-Control-Allow-Headers”, select “Customize”
 
 Click “Add item” and add these 5 headers separately: Authorization, Content-Type, CloudFront-Key-Pair-Id, CloudFront-Signature, CloudFront-Policy  
 
-![Diagram](images/image47.png)
+![Diagram](images/image48.png)
 
 
 For “Access-Control-Allow-Methods”, select “Customize”
@@ -638,7 +638,7 @@ For “Access-Control-Allow-Methods”, select “Customize”
 From the drop down menu select the options “GET, OPTIONS, POST”
 
 
-![Diagram](images/image48.png)
+![Diagram](images/image49.png)
 
 
 For “Access-Control-Expose-Headers, select “Customize”.
@@ -646,17 +646,17 @@ For “Access-Control-Expose-Headers, select “Customize”.
 Add these 3 headers by clicking “Add item” button for each one: CloudFront-Key-Pair-Id, CloudFront-Signature, CloudFront-Policy
 
 
-![Diagram](images/image49.png)
+![Diagram](images/image50.png)
 
 
 At the bottom of this section find the option “Access-Control-Allow-Credentials” and select it.  
 
-![Diagram](images/image50.png)
+![Diagram](images/image51.png)
 
 
 The whole page will be as follows:  
 
-![Diagram](images/image51.png)
+![Diagram](images/image52.png)
 
 Scroll to bottom of the page and click the orange button “Create”
 
@@ -680,7 +680,7 @@ Add the following CORS configuration:
 
 Replace https://app.yourdomain.com with your website domain such as neuroglancer.domain.com  
 
-![Diagram](images/image52.png)
+![Diagram](images/image53.png)
 
 Save the changes.
 
@@ -690,7 +690,7 @@ Navigate to the Route 53 console to configure the DNS for the custom cloudfront 
 
 From the Route 53 console, click on the “Hosted Zones” link on the left menu. Click on the name of your hosted zone, and find and click on the orange button “Create record”. Keep the record type at “A-name”. Enter the name used earlier for your distribution, for example, “cfdist” for “cfdist.domain.com”. Click on the alias button and select “Alias to cloudfront distribution”. Find the cloudfront distribution name from the list. Click the orange “Create records” button. 
 
-![Diagram](images/image53.png)
+![Diagram](images/image54.png)
 
 
 # Step 20: Add the script to generate cookies
@@ -832,7 +832,7 @@ sudo crontab \-e
 
 The first time cron is run it will ask you for your favorite editor. After that it will go straight into editing the file.  
 
-![Diagram][images/image54.png]  
+![Diagram][images/image55.png]  
 
 Select the editor of your choice and add the following line at the bottom of the file:  
 This will set the cron job to run at 12:00pm UTC (04:00am PST) every Monday
