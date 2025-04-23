@@ -274,10 +274,10 @@ https://us-east-1fgg4vnmhs.auth.us-east-1.amazoncognito.com/oauth2/idpresponse
 Click create.
 
 Copy the client ID (yours will be different) to a known location.  
-573222911176-bgtja564jv2cklk4u9qbkqsh41bsq543.apps.googleusercontent.com
+573222222226-bgtja564jjjjjjjju9qbkqsh41bsq543.apps.googleusercontent.com
 
 Copy the client secret.  
-GOCSPX-MNQz2w5I4OKrsC5kppsPdr\_NGbpC
+GOCSPX-MNQz2wpppppppppkppsPdr\_NGbpC
 
 Download the json.
 
@@ -391,6 +391,7 @@ sudo su \- ubuntu
 
 Step through the following commands from the prompt.
 
+```
 sudo apt-get update \-y  
 git clone https://github.com/google/neuroglancer.git  
 wget \-qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash  
@@ -398,16 +399,17 @@ wget \-qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bas
 nvm install stable  
 cd neuroglancer  
 npm i
+```
 
-## Modify the http\_request.ts file and build Neuroglancer
+## Modify the http_request.ts file and build Neuroglancer
 
-The command to fetch the Neuroglancer input files in the private S3 bucket is modified to allow for the addition of credentials. Two lines are added to the http\_request.ts file. Move to the src directory:
+The command to fetch the Neuroglancer input files in the private S3 bucket is modified to allow for the addition of credentials. Two lines are added to the http_request.ts file. Move to the src directory:
 
 cd /home/ubuntu/neuroglancer/src/util
 
-Using your favorite editor, edit the “http\_request.ts” file.
+Using your favorite editor, edit the “http_request.ts” file.
 
-vi /home/ubuntu/neuroglancer/src/util/http\_request.ts
+vi /home/ubuntu/neuroglancer/src/util/http_request.ts
 
 The following two lines are added right after line 105, “for (let requestAttempt \= 0; ;) {“   
 There are four spaces at the front of the line for the correct indentation:
@@ -430,10 +432,12 @@ Build Neuroglancer as follows:
 npm run build
 
 Host the production version:  
+```
 sudo mkdir \-p /var/www/neuroglancer  
 sudo cp \-r dist/client/\* /var/www/neuroglancer/  
 sudo chown \-R www-data:www-data /var/www/neuroglancer  
 sudo chmod \-R 755 /var/www/neuroglancer
+```
 
 Create the following file using the file editor of your choice:
 
@@ -441,6 +445,7 @@ sudo vi /etc/nginx/sites-available/neuroglancer
 
 Copy and paste the following text. 
 
+```
 server {  
     listen 8080;  
     server\_name your-domain.com;  \# Replace with your actual domain   
@@ -451,6 +456,7 @@ server {
         try\_files $uri /index.html;  
     }  
 }
+```
 
 **IMPORTANT:** Replace the URL in the file to the name added to route 53 above as specified with the comment statement at the top of that file. For example, use neuroglancer.domain.com
 
@@ -512,27 +518,34 @@ Cookies are used to authorize the request of private S3 files hosted by a cloudf
 
 Connect to the Neuroglancer Instance again using SSM. Move to the \~/.ssh directory. Enter the following three commands to create a private and public key:
 
+```
 openssl genpkey \-algorithm RSA \-out temp.pem \-pkeyopt rsa\_keygen\_bits:2048  
 openssl pkey \-in temp.pem \-traditional \-out ngcloud.pem  
 openssl rsa \-in ngcloud.pem \-pubout \-out ngcloud.pub
+```
 
 Copy the private key to location used by nginx:
 
+```
 sudo cp \~/.ssh/ngcloud.pem /etc/nginx/ngcloud.pem
+```
 
 Modify the permissions and ownership:
 
+```
 sudo chmod 600 /etc/nginx/ngcloud.pem  
 sudo chown root:root /etc/nginx/ngcloud.pem
+```
 
 Keep this SSM window open and navigate to CloudFront console in a different browser tab. In the menu on the left and select “public keys”. Select the orange “create public key” from the upper right hand corner. Give the key the name “ngcloud”.
 
 From the SSM terminal display the public key: ngcloud.pub with the cat command.
 
+```
 cat nglcoud.pub
+```
 
 Copy and paste the contents of that file into the cloudfront page just displayed.
-
 
 ![Diagram](images/image35.png)
 
