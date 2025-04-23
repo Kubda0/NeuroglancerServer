@@ -445,7 +445,7 @@ npm run build
 Host the production version:  
 ```
 sudo mkdir -p /var/www/neuroglancer  
-sudo cp -r dist/client/\* /var/www/neuroglancer/  
+sudo cp -r dist/client/* /var/www/neuroglancer/  
 sudo chown -R www-data:www-data /var/www/neuroglancer  
 sudo chmod -R 755 /var/www/neuroglancer
 ```
@@ -539,15 +539,15 @@ Cookies are used to authorize the request of private S3 files hosted by a cloudf
 Connect to the Neuroglancer Instance again using SSM. Move to the \~/.ssh directory. Enter the following three commands to create a private and public key:
 
 ```
-openssl genpkey \-algorithm RSA \-out temp.pem \-pkeyopt rsa\_keygen\_bits:2048  
-openssl pkey \-in temp.pem \-traditional \-out ngcloud.pem  
-openssl rsa \-in ngcloud.pem \-pubout \-out ngcloud.pub
+openssl genpkey -algorithm RSA -out temp.pem -pkeyopt rsa_keygen_bits:2048  
+openssl pkey -in temp.pem -traditional -out ngcloud.pem  
+openssl rsa -in ngcloud.pem -pubout -out ngcloud.pub
 ```
 
 Copy the private key to location used by nginx:
 
 ```
-sudo cp \~/.ssh/ngcloud.pem /etc/nginx/ngcloud.pem
+sudo cp ~/.ssh/ngcloud.pem /etc/nginx/ngcloud.pem
 ```
 
 Modify the permissions and ownership:
