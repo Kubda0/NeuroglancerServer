@@ -113,28 +113,28 @@ Use the advanced settings to boot up with the following user data. All other set
 **Caution,** google docs sometimes changes the double quotes in the last line to “smart quotes” which causes the script to fail. Paste as unformatted text if possible. Please double check the quotes after pasting into the User Data box.
 
 ```
-\#\!/bin/bash  
-apt update \-y  
-apt install nginx \-y
+#!/bin/bash  
+apt update -y  
+apt install nginx -y
 
-cat \<\< EOF \>\> /etc/nginx/sites-available/default  
+cat << EOF >> /etc/nginx/sites-available/default  
 server {  
     listen 80;  
-    server\_name \_;  \# Accepts requests to any IP or domain
+    server_name _;  # Accepts requests to any IP or domain
 
     root /var/www/html;  
     index index.html;
 
     location / {  
-        try\_files $uri $uri/ \=404;  
+        try_files $uri $uri/ =404;  
     }  
 }  
 EOF
 
-mkdir \-p /var/www/html  
-echo "\<h1\>Hello from my server\</h1\>" \> /var/www/html/index.html  
-chown \-R www-data:www-data /var/www/html  
-chmod \-R 755 /var/www/html
+mkdir -p /var/www/html  
+echo "<h1>Hello from my server</h1>" > /var/www/html/index.html  
+chown -R www-data:www-data /var/www/html  
+chmod -R 755 /var/www/html
 
 systemctl restart nginx  
 systemctl enable nginx  
