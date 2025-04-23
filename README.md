@@ -387,7 +387,9 @@ In this step we will connect to the Neuroglancer EC2 instance created earlier. I
 
 Go to the EC2 dashboard and connect to the instance created earlier using SSM. Switch to the ubuntu user if logged in as ssm-user. 
 
+```
 sudo su \- ubuntu
+```
 
 Step through the following commands from the prompt.
 
