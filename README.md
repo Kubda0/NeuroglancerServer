@@ -421,8 +421,8 @@ The following two lines are added right after line 105, “for (let requestAttem
 There are four spaces at the front of the line for the correct indentation:
 
 ```
-    init \= init || {};  
-    init.credentials \= "include"; // Ensure cookies are sent with requests
+    init = init || {};  
+    init.credentials = "include"; // Ensure cookies are sent with requests
 ```
 
 ![Diagram](images/image29.png)
@@ -865,29 +865,33 @@ sudo vi /usr/local/bin/gen_set_cookie.sh
 Add the following lines of code:
 
 ```
-#\!/usr/bin/bash  
-python3 /usr/local/bin/generate\_cloudfront\_cookie.py  
+#!/usr/bin/bash  
+python3 /usr/local/bin/generate_cloudfront_cookie.py  
 /bin/systemctl reload nginx
 ```
 
 Make this file executable by running the command:  
 ```
-sudo chmod 755 /usr/local/bin/gen\_set\_cookie.sh
+sudo chmod 755 /usr/local/bin/gen_set_cookie.sh
 ```
 ## Create the chron job
 
 To create the chron job run the following at the ubuntu command line:
 
-sudo crontab \-e
+```
+sudo crontab -e
+```
 
 The first time cron is run it will ask you for your favorite editor. After that it will go straight into editing the file.  
 
-![Diagram][images/image55.png]  
+![Diagram](images/image55.png)
 
 Select the editor of your choice and add the following line at the bottom of the file:  
 This will set the cron job to run at 12:00pm UTC (04:00am PST) every Monday
 
-0 12 \* \* 1 /usr/bin/bash /usr/local/bin/gen\_set\_cookie.sh
+```
+0 12 * * 1 /usr/bin/bash /usr/local/bin/gen_set_cookie.sh
+```
 
 Save and exit.
 
@@ -895,15 +899,19 @@ Save and exit.
 
 The gen\_set\_cookie.sh bash script will have to run once before Neuroglancer works with private S3 files. Execute the bash script:
 
-sudo /usr/local/bin/gen\_set\_cookie.sh  
+```
+sudo /usr/local/bin/gen_set_cookie.sh  
 sudo systemctl reload nginx
+```
 
 After running the commands above go to a web browser and navigate to your Neuroglancer URL ([https://example.neuroglancer.net](https://example.neuroglancer.net)) and demonstrate that it works.
 
 **Example loading zarr from private bucket**
 
 As source give:  
-https://\<url from step 17\>/\<path on s3\>
+```
+https://<url from step 17>/<path on s3>
+```
 
 # Step 23: Quick security checks
 
