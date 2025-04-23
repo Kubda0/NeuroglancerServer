@@ -751,7 +751,7 @@ sudo apt install python3-rsa
 Using your favorite editor, create the following file:
 
 ```
-sudo vi /usr/local/bin/generate\_cloudfront\_cookie.py
+sudo vi /usr/local/bin/generate_cloudfront_cookie.py
 ```
 
 Add the following content:  
