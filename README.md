@@ -703,15 +703,17 @@ Go back to your S3 Bucket if you are not still there. Select the permissions tab
 
 Add the following CORS configuration:
 
-\[  
+```
+[  
   {  
-    "AllowedOrigins": \["https://app.yourdomain.com"\],  
-    "AllowedMethods": \["GET", "HEAD"\],  
-    "AllowedHeaders": \["\*"\],  
-    "ExposeHeaders": \["ETag"\],  
+    "AllowedOrigins": ["https://app.yourdomain.com"],  
+    "AllowedMethods": ["GET", "HEAD"],  
+    "AllowedHeaders": ["*"],  
+    "ExposeHeaders": ["ETag"],  
     "MaxAgeSeconds": 3000  
   }  
-\]
+]
+```
 
 Replace https://app.yourdomain.com with your website domain such as neuroglancer.domain.com  
 
@@ -740,15 +742,20 @@ The cookies are injected into the /etc/nginx/sites-available/neuroglancer file t
 
 Log onto the EC2 Neuroglancer Instance using SSM connect. Login as ubuntu. From the terminal, run the following command to Install the python RSA library: 
 
+```
 sudo apt install python3-rsa
+```
 
 ## Add the script to the instance
 
 Using your favorite editor, create the following file:
 
+```
 sudo vi /usr/local/bin/generate\_cloudfront\_cookie.py
+```
 
 Add the following content:  
+```
 import base64  
 import json  
 import time  
@@ -756,87 +763,90 @@ import rsa
 import re  
 import logging
 
-\# Configure logging  
-log\_file \= "/var/log/gen\_set\_cookie.log"  
-logging.basicConfig(filename=log\_file, level=logging.INFO, format='%(asctime)s \- %(levelname)s \- %(message)s')
+# Configure logging  
+log_file = "/var/log/gen_set_cookie.log"  
+logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-\# Full Path to private key (.pem file)  
-private\_key\_path \= "/etc/nginx/ngcloud.pem"
+# Full Path to private key (.pem file)  
+private_key_path = "/etc/nginx/ngcloud.pem"
 
-\# CloudFront Key Pair ID  
-\#REPLACE  
-key\_pair\_id \= "K2BOYVN17TEKOL"  \# REPLACE with your CloudFront Key Pair ID
+# CloudFront Key Pair ID  
+#REPLACE  
+key_pair_id = "K2BOYVN17TEKOL"  # REPLACE with your CloudFront Key Pair ID
 
-\# CloudFront distribution URL  
-\#REPLACE  
-cloudfront\_url \= "https://cfdist.domain.com/\*"  \# REPLACE with your CloudFront URL
+# CloudFront distribution URL  
+#REPLACE  
+cloudfront_url = "https://cfdist.domain.com/*"  # REPLACE with your CloudFront URL
 
-\# Expiration time (1 week from now)  
-expires \= int(time.time()) \+ 604800  \# Expiry time in seconds
+# Expiration time (1 week from now)  
+expires = int(time.time()) + 604800  # Expiry time in seconds
 
-\# Define CloudFront policy  
-policy \= {"Statement": \[{"Resource": cloudfront\_url, "Condition": {"DateLessThan": {"AWS:EpochTime": expires}}}\]}
+# Define CloudFront policy  
+policy = {"Statement": [{"Resource": cloudfront_url, "Condition": {"DateLessThan": {"AWS:EpochTime": expires}}}]}
 
 try:  
-    \# Load the private key  
-    with open(private\_key\_path, "r") as key\_file:  
-        private\_key \= rsa.PrivateKey.load\_pkcs1(key\_file.read())
+    # Load the private key  
+    with open(private_key_path, "r") as key_file:  
+        private_key = rsa.PrivateKey.load_pkcs1(key_file.read())
 
     logging.info("Private key loaded successfully.")  
 except Exception as e:  
     logging.error(f"Error loading private key: {e}")  
     exit(1)
 
-\# Convert the policy to JSON, then base64 encode it  
-policy\_json \= json.dumps(policy, separators=(",", ":"))  
-base64\_policy \= base64.b64encode(policy\_json.encode('utf-8')).decode('utf-8')
+# Convert the policy to JSON, then base64 encode it  
+policy_json = json.dumps(policy, separators=(",", ":"))  
+base64_policy = base64.b64encode(policy_json.encode('utf-8')).decode('utf-8')
 
-\# Sign the policy with the private key using RSA-SHA1  
-signed\_policy \= base64.b64encode(rsa.sign(policy\_json.encode('utf-8'), private\_key, 'SHA-1')).decode('utf-8')
+# Sign the policy with the private key using RSA-SHA1  
+signed_policy = base64.b64encode(rsa.sign(policy_json.encode('utf-8'), private_key, 'SHA-1')).decode('utf-8')
 
-\# Prepare Nginx headers to set CloudFront cookies  
-header\_directives \= "\\n".join(\[  
-    \#REPLACE “Domain=” with “Domain=.your\_domain.net”  
-    f'add\_header Set-Cookie "{key}={value}; Path=/; Domain=.domain.com; Secure; HttpOnly" always;'  
+# Prepare Nginx headers to set CloudFront cookies  
+header_directives = "\n".join([  
+    #REPLACE “Domain=” with “Domain=.your_domain.net”  
+    f'add_header Set-Cookie "{key}={value}; Path=/; Domain=.domain.com; Secure; HttpOnly" always;'  
     for key, value in {  
-        'CloudFront-Policy': base64\_policy,  
-        'CloudFront-Signature': signed\_policy,  
-        'CloudFront-Key-Pair-Id': key\_pair\_id  
+        'CloudFront-Policy': base64_policy,  
+        'CloudFront-Signature': signed_policy,  
+        'CloudFront-Key-Pair-Id': key_pair_id  
     }.items()  
-\])
+])
 
-\# Path to the Nginx site configuration  
-nginx\_config\_path \= "/etc/nginx/sites-available/neuroglancer"
+# Path to the Nginx site configuration  
+nginx_config_path = "/etc/nginx/sites-available/neuroglancer"
 
 try:  
-    \# Read the existing config file  
-    with open(nginx\_config\_path, "r") as nginx\_file:  
-        config\_content \= nginx\_file.read()  
+    # Read the existing config file  
+    with open(nginx_config_path, "r") as nginx_file:  
+        config_content = nginx_file.read()  
     logging.info("Nginx config file read successfully.")  
 except Exception as e:  
     logging.error(f"Error reading nginx config file: {e}")  
     exit(1)
 
-\# Remove any previously injected CloudFront cookies  
-config\_content \= re.sub(r'add\_header Set-Cookie "CloudFront-\[^"\]+" always;\\n?', '', config\_content)
+# Remove any previously injected CloudFront cookies  
+config_content = re.sub(r'add_header Set-Cookie "CloudFront-[^"]+" always;\n?', '', config_content)
 
-\# Inject new add\_header directives after index.html  
-updated\_config \= re.sub(r'(index index\\.html;)', r'\\1\\n' \+ header\_directives, config\_content, count=1)
+# Inject new add_header directives after index.html  
+updated_config = re.sub(r'(index index\.html;)', r'\1\n' + header_directives, config_content, count=1)
 
 try:  
-    \# Write the updated config back to the file  
-    with open(nginx\_config\_path, "w") as nginx\_file:  
-        nginx\_file.write(updated\_config.strip() \+ "\\n")  
+    # Write the updated config back to the file  
+    with open(nginx_config_path, "w") as nginx_file:  
+        nginx_file.write(updated_config.strip() + "\n")  
     logging.info("Cookies written to nginx config file successfully")  
 except Exception as e:  
     logging.error(f"Error writing to nginx config file: {e}")  
     exit(1)
+```
 
 IMPORTANT: Update the script with cloudfront ID, cloudfront URL and domain URL before saving. Search on the word REPLACE to look for the replacement locations.
 
 Modify the permissions on the file.
 
-sudo chmod 755 /usr/local/bin/generate\_cloudfront\_cookie.py
+```
+sudo chmod 755 /usr/local/bin/generate_cloudfront_cookie.py
+```
 
 # Step 21: Add cron job to run the script
 
@@ -848,17 +858,22 @@ The life span of the cookies is set for 1 week, the cron job also runs weekly to
 
 Cron will run a bash script that contains two commands. The first command runs the script above. The second reloads nginx. Using the editor of choice, create and edit the file:
 
-sudo vi /usr/local/bin/gen\_set\_cookie.sh
+```
+sudo vi /usr/local/bin/gen_set_cookie.sh
+```
 
 Add the following lines of code:
 
-\#\!/usr/bin/bash  
+```
+#\!/usr/bin/bash  
 python3 /usr/local/bin/generate\_cloudfront\_cookie.py  
 /bin/systemctl reload nginx
+```
 
 Make this file executable by running the command:  
+```
 sudo chmod 755 /usr/local/bin/gen\_set\_cookie.sh
-
+```
 ## Create the chron job
 
 To create the chron job run the following at the ubuntu command line:
