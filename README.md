@@ -388,7 +388,7 @@ In this step we will connect to the Neuroglancer EC2 instance created earlier. I
 Go to the EC2 dashboard and connect to the instance created earlier using SSM. Switch to the ubuntu user if logged in as ssm-user. 
 
 ```
-sudo su \- ubuntu
+sudo su - ubuntu
 ```
 
 Step through the following commands from the prompt.
@@ -407,18 +407,23 @@ npm i
 
 The command to fetch the Neuroglancer input files in the private S3 bucket is modified to allow for the addition of credentials. Two lines are added to the http_request.ts file. Move to the src directory:
 
+```
 cd /home/ubuntu/neuroglancer/src/util
+```
 
 Using your favorite editor, edit the “http_request.ts” file.
 
+```
 vi /home/ubuntu/neuroglancer/src/util/http_request.ts
+```
 
 The following two lines are added right after line 105, “for (let requestAttempt \= 0; ;) {“   
 There are four spaces at the front of the line for the correct indentation:
 
+```
     init \= init || {};  
     init.credentials \= "include"; // Ensure cookies are sent with requests
-
+```
 
 ![Diagram](images/image29.png)
 
@@ -427,11 +432,15 @@ There are four spaces at the front of the line for the correct indentation:
 
 Return to the neuroglancer directory:
 
+```
 cd /home/ubuntu/neuroglancer/
+```
 
 Build Neuroglancer as follows:
 
+```
 npm run build
+```
 
 Host the production version:  
 ```
@@ -443,7 +452,9 @@ sudo chmod -R 755 /var/www/neuroglancer
 
 Create the following file using the file editor of your choice:
 
+```
 sudo vi /etc/nginx/sites-available/neuroglancer
+```
 
 Copy and paste the following text. 
 
