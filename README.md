@@ -112,6 +112,7 @@ Use the advanced settings to boot up with the following user data. All other set
 
 **Caution,** google docs sometimes changes the double quotes in the last line to “smart quotes” which causes the script to fail. Paste as unformatted text if possible. Please double check the quotes after pasting into the User Data box.
 
+```
 \#\!/bin/bash  
 apt update \-y  
 apt install nginx \-y
@@ -137,6 +138,7 @@ chmod \-R 755 /var/www/html
 
 systemctl restart nginx  
 systemctl enable nginx  
+```
 
 ![Diagram](images/image8.png)
 
