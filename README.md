@@ -392,10 +392,10 @@ sudo su \- ubuntu
 Step through the following commands from the prompt.
 
 ```
-sudo apt-get update \-y  
+sudo apt-get update -y  
 git clone https://github.com/google/neuroglancer.git  
-wget \-qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash  
-. \~/.bashrc  
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash  
+. ~/.bashrc  
 nvm install stable  
 cd neuroglancer  
 npm i
@@ -433,10 +433,10 @@ npm run build
 
 Host the production version:  
 ```
-sudo mkdir \-p /var/www/neuroglancer  
-sudo cp \-r dist/client/\* /var/www/neuroglancer/  
-sudo chown \-R www-data:www-data /var/www/neuroglancer  
-sudo chmod \-R 755 /var/www/neuroglancer
+sudo mkdir -p /var/www/neuroglancer  
+sudo cp -r dist/client/\* /var/www/neuroglancer/  
+sudo chown -R www-data:www-data /var/www/neuroglancer  
+sudo chmod -R 755 /var/www/neuroglancer
 ```
 
 Create the following file using the file editor of your choice:
@@ -448,12 +448,12 @@ Copy and paste the following text.
 ```
 server {  
     listen 8080;  
-    server\_name your-domain.com;  \# Replace with your actual domain   
+    server_name your-domain.com;  # Replace with your actual domain   
     root /var/www/neuroglancer;  
     index index.html;
 
     location / {  
-        try\_files $uri /index.html;  
+        try_files $uri /index.html;  
     }  
 }
 ```
@@ -462,14 +462,21 @@ server {
 
 Enable the new configuration:
 
-sudo ln \-s /etc/nginx/sites-available/neuroglancer /etc/nginx/sites-enabled/  
+```
+sudo ln -s /etc/nginx/sites-available/neuroglancer /etc/nginx/sites-enabled/  
+```
 Remove the link to the default (dummy) website created earlier with the following command. 
 
+```
 sudo rm /etc/nginx/sites-enabled/default
+```
+
 
 Restart nginx and test the new configuration:  
+```
 sudo systemctl restart nginx  
-sudo nginx \-t
+sudo nginx -t
+```
 
 The output of this command should look like this:  
 
